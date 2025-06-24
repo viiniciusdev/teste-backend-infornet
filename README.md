@@ -1,145 +1,192 @@
-
 # Teste Técnico – Desenvolvedor Backend Laravel – Infornet
 
-Este projeto foi desenvolvido como parte do processo seletivo para a vaga de Desenvolvedor Backend na empresa Infornet. O sistema simula uma plataforma utilizada por assistências 24 horas veicular (seguradoras), com foco na busca do melhor prestador de serviço considerando custo-benefício e distância.
+Este projeto foi desenvolvido como parte do processo seletivo para a vaga de Desenvolvedor Backend na empresa Infornet. O sistema simula uma plataforma utilizada por assistências 24 horas veicular, com foco na escolha do melhor prestador de serviço com base em custo-benefício e distância percorrida.
 
-## Tecnologias Utilizadas
+---
+
+##  Tecnologias Utilizadas
 
 - PHP 8.1
 - Laravel 10
 - MySQL
 - JWT Auth
-- Tailwind CSS (Frontend AJAX)
-- Postman (documentação da API)
+- Tailwind CSS (frontend)
+- JavaScript com AJAX
+- Postman
 
 ---
 
-## Funcionalidades Entregues
+##  Funcionalidades Entregues
 
 ### Autenticação com JWT
-- Endpoint: `POST /api/login`
-- Sistema de autenticação JWT com middleware protegendo todas as rotas privadas.
-- Endpoints adicionais: `/me`, `/logout`, `/refresh`.
+- `POST /api/login`: Gera token JWT com login e senha.
+- Rotas protegidas por `auth:api`:
+  - `/me`: Dados do usuário autenticado
+  - `/logout`: Encerra sessão
+  - `/refresh`: Atualiza token
+
+---
 
 ### Cadastro de Prestadores
 - Endpoint: `POST /api/prestadores`
-- Campos: nome, email, telefone, CPF, endereço completo, coordenadas geográficas, situação (ativo).
-- População automática de 25 prestadores com dados de cidades reais de MG (como Contagem, BH, Betim, etc.).
-- Script de inserção incluso.
+- Prestadores têm dados como nome, CPF, e-mail, telefone, endereço completo (com latitude/longitude reais), cidade e UF.
+- Inseridos 29 registros com dados reais da Região Metropolitana de Belo Horizonte (Contagem, BH, Betim, Vespasiano, etc.)
+- Todos possuem situação ativa (1).
+
+---
 
 ### Cadastro de Serviços
 - Endpoint: `POST /api/servicos`
-- Cada prestador possui no mínimo 3 serviços associados por meio da tabela `servico_prestadores`.
+- Exemplo: "Reboque", "Chaveiro", "Socorro Mecânico"
+
+---
 
 ### Associação Prestador x Serviço
 - Endpoint: `POST /api/servico-prestadores`
-- Campos: km de saída, valor de saída, valor por km excedente.
-- Modelagem de relacionamento Many-to-Many com dados adicionais na tabela pivô.
+- Relacionamento Many-to-Many com campos extras:
+  - `km_saida`
+  - `valor_saida`
+  - `valor_km_excedente`
 
-### Cálculo de custo de atendimento
+---
+
+### Cálculo de Custo de Atendimento
 - Endpoint: `POST /api/servicos/calcular-custo`
-- Baseado na distância total em linha reta entre: prestador → origem, origem → destino, destino → prestador.
-- Lógica implementada conforme solicitado no enunciado.
+- Baseado na distância total (ida + volta), considerando:
+  - Prestador → Origem
+  - Origem → Destino
+  - Destino → Prestador
 
-### Cálculo de valor real
+---
+
+### Cálculo de Valor Real
 - Endpoint: `POST /api/servicos/calcular-valor-real`
-- Com base na fórmula do teste: valor de saída + (km excedente * valor por km excedente).
+- Fórmula: `valor_saida + (km_excedente * valor_por_km)`
 
-### Consulta de prestadores
+---
+
+### Busca de Coordenadas
+- Endpoint interno: `POST /enderecos/geolocalizar`
+- Integração com API externa `geocode/{endereco}` (Basic Auth)
+
+---
+
+### Consulta de Prestadores com Filtros e Ordenações
 - Endpoint: `POST /api/prestadores/consulta`
-- Recebe filtros e ordenação: cidade, UF, status, valor total, distância, status online.
-- Consome a API externa de status de prestadores via Basic Auth, conforme requisitado.
-
-### Busca de coordenadas (geolocalização)
-- Endpoint: `POST /enderecos/geolocalizar`
-- Integração com a API externa `endereco/geocode/{endereco}` via Basic Auth.
-
----
-
-## Frontend (Interface)
-
-- Tela pública criada em HTML + Tailwind CSS + JavaScript.
-- Consumo dos endpoints protegidos via `auth.js`, utilizando token JWT .
-- Tela de consulta interativa sem recarregamento de página (AJAX).
-- Listagem dos prestadores e serviços prestados.
-- Filtros de cidade, serviço e ordenação.
+- Entrada:
+  - Origem e destino (cidade, estado, latitude, longitude)
+  - ID do serviço
+  - Ordenação: valor total, distância, status
+  - Filtros: cidade, estado, status
+- Saída:
+  - Lista de prestadores + valor estimado do atendimento
+  - Status online via API externa: `https://nhen90f0j3.execute-api.us-east-1.amazonaws.com/v1/api/prestadores/online` (Basic Auth)
 
 ---
 
-## Organização do Código
+## Frontend (Interface AJAX)
 
-- Separação em controllers, models, factories, seeders.
-- Uso de princípios do SOLID e boas práticas Laravel.
-- Repositórios organizados por responsabilidade.
-- `.gitignore` respeitado para não subir arquivos desnecessários (como `.env`, `vendor`, `node_modules`, etc.).
+- Local: `public/consulta_prestadores.html`
+- Estilo: Tailwind CSS
+- Comunicação assíncrona via `fetch()`
 
----
+### Inserção manual do token JWT:
+> Abra o arquivo `public/auth.js` e cole seu token na linha:
+```js
+const token = "COLE_SEU_TOKEN_JWT_AQUI";
+Sem isso, a API não autoriza a requisição. Token é obtido ao fazer login via Postman em /api/login.
 
-## Como Executar o Projeto
+## Documentação Postman
+Arquivo incluído: API Teste todos_metodos(GET_POST).json
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/viiniciusdev/teste-backend-infornet.git
-   ```
+Contém todos os métodos prontos para testes:
 
-2. Acesse o diretório:
-   ```bash
-   cd teste-backend-infornet
-   ```
+Autenticação
 
-3. Instale as dependências:
-   ```bash
-   composer install
-   npm install && npm run build
-   ```
+Cadastro
 
-4. Configure o `.env`:
-   - Copie o `.env.example` para `.env`
-   - Ajuste as credenciais do banco de dados
+Consultas
 
-5. Gere a chave da aplicação:
-   ```bash
-   php artisan key:generate
-   ```
+Cálculos
 
-6. Execute as migrations e seeders:
-   ```bash
-   php artisan migrate --seed
-   ```
+Integrações externas
 
-7. Inicie o servidor local:
-   ```bash
-   php artisan serve
-   ```
+Organização do Código
+Separação por:
 
----
+Controllers
 
-## Testes e Documentação
+Models
 
-- A documentação da API está disponível no Postman, no arquivo:
-  ```
-  postman_collection_infornet.json
-- Contém chamadas para:
-  - Login
-  - Consulta de perfil
-  - Logout
+Seeders
 
----
+Factories
 
-## Pontos Pendentes
+Middlewares
 
-Apesar da maioria das funcionalidades exigidas já terem sido desenvolvidas, seguem alguns pontos que ainda não foram completamente finalizados:
+Utilização de princípios do SOLID
 
-- Integração visual completa entre os resultados da consulta e a renderização detalhada dos serviços por prestador.
-- Implementação de testes automatizados (unitários e de integração).
-- Containerização via Docker.
-- Tela com exibição via Blade (foi utilizada abordagem independente via HTML + JS).
+Padrão de repositórios
 
----
+.gitignore configurado para ignorar:
 
-## Considerações Finais
+.env
 
-O projeto está funcional, cumpre os principais requisitos e pode ser executado localmente conforme o passo a passo descrito. As funcionalidades principais de autenticação, busca de prestadores, cálculos de valores e integração externa estão implementadas, com foco em desempenho, clareza e arquitetura limpa.
+vendor/
 
-Em caso de dúvidas, estou à disposição para esclarecimentos.
+node_modules/
 
+Chaves e logs
+
+🚀 Como Executar o Projeto
+Clone o repositório
+
+bash
+Copiar
+Editar
+git clone https://github.com/viiniciusdev/teste-backend-infornet.git
+cd teste-backend-infornet
+Instale as dependências
+
+bash
+Copiar
+Editar
+composer install
+npm install && npm run build
+Copie o .env.example
+
+bash
+Copiar
+Editar
+cp .env.example .env
+Configure o banco de dados MySQL no .env
+
+Gere a chave
+
+bash
+Copiar
+Editar
+php artisan key:generate
+Execute as migrations e seeders
+
+bash
+Copiar
+Editar
+php artisan migrate --seed
+Inicie o servidor
+
+bash
+Copiar
+Editar
+php artisan serve
+ O Que Ainda Pode Ser Melhorado
+ Testes unitários e de integração (não implementados)
+
+ Containerização com Docker
+
+ Versão alternativa com Blade em vez de HTML puro
+
+ Autenticação automatizada no frontend sem precisar colar o token
+
+✅ Status Final
+O projeto está funcional e pode ser testado facilmente. Todos os endpoints principais estão implementados, e o fluxo de cálculo e consulta atende os requisitos do teste técnico. A interface foi construída com AJAX puro e está apta para retornar dados reais com base nas regras definidas.
