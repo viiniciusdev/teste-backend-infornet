@@ -1,61 +1,145 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Teste Técnico – Desenvolvedor Backend Laravel – Infornet
 
-## About Laravel
+Este projeto foi desenvolvido como parte do processo seletivo para a vaga de Desenvolvedor Backend na empresa Infornet. O sistema simula uma plataforma utilizada por assistências 24 horas veicular (seguradoras), com foco na busca do melhor prestador de serviço considerando custo-benefício e distância.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tecnologias Utilizadas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.1
+- Laravel 10
+- MySQL
+- JWT Auth
+- Tailwind CSS (Frontend AJAX)
+- Postman (documentação da API)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Funcionalidades Entregues
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Autenticação com JWT
+- Endpoint: `POST /api/login`
+- Sistema de autenticação JWT com middleware protegendo todas as rotas privadas.
+- Endpoints adicionais: `/me`, `/logout`, `/refresh`.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Cadastro de Prestadores
+- Endpoint: `POST /api/prestadores`
+- Campos: nome, email, telefone, CPF, endereço completo, coordenadas geográficas, situação (ativo).
+- População automática de 25 prestadores com dados de cidades reais de MG (como Contagem, BH, Betim, etc.).
+- Script de inserção incluso.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Cadastro de Serviços
+- Endpoint: `POST /api/servicos`
+- Cada prestador possui no mínimo 3 serviços associados por meio da tabela `servico_prestadores`.
 
-## Laravel Sponsors
+### Associação Prestador x Serviço
+- Endpoint: `POST /api/servico-prestadores`
+- Campos: km de saída, valor de saída, valor por km excedente.
+- Modelagem de relacionamento Many-to-Many com dados adicionais na tabela pivô.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Cálculo de custo de atendimento
+- Endpoint: `POST /api/servicos/calcular-custo`
+- Baseado na distância total em linha reta entre: prestador → origem, origem → destino, destino → prestador.
+- Lógica implementada conforme solicitado no enunciado.
 
-### Premium Partners
+### Cálculo de valor real
+- Endpoint: `POST /api/servicos/calcular-valor-real`
+- Com base na fórmula do teste: valor de saída + (km excedente * valor por km excedente).
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Consulta de prestadores
+- Endpoint: `POST /api/prestadores/consulta`
+- Recebe filtros e ordenação: cidade, UF, status, valor total, distância, status online.
+- Consome a API externa de status de prestadores via Basic Auth, conforme requisitado.
 
-## Contributing
+### Busca de coordenadas (geolocalização)
+- Endpoint: `POST /enderecos/geolocalizar`
+- Integração com a API externa `endereco/geocode/{endereco}` via Basic Auth.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## Frontend (Interface)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Tela pública criada em HTML + Tailwind CSS + JavaScript.
+- Consumo dos endpoints protegidos via `auth.js`, utilizando token JWT .
+- Tela de consulta interativa sem recarregamento de página (AJAX).
+- Listagem dos prestadores e serviços prestados.
+- Filtros de cidade, serviço e ordenação.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Organização do Código
 
-## License
+- Separação em controllers, models, factories, seeders.
+- Uso de princípios do SOLID e boas práticas Laravel.
+- Repositórios organizados por responsabilidade.
+- `.gitignore` respeitado para não subir arquivos desnecessários (como `.env`, `vendor`, `node_modules`, etc.).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Como Executar o Projeto
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/viiniciusdev/teste-backend-infornet.git
+   ```
+
+2. Acesse o diretório:
+   ```bash
+   cd teste-backend-infornet
+   ```
+
+3. Instale as dependências:
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
+
+4. Configure o `.env`:
+   - Copie o `.env.example` para `.env`
+   - Ajuste as credenciais do banco de dados
+
+5. Gere a chave da aplicação:
+   ```bash
+   php artisan key:generate
+   ```
+
+6. Execute as migrations e seeders:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+7. Inicie o servidor local:
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## Testes e Documentação
+
+- A documentação da API está disponível no Postman, no arquivo:
+  ```
+  postman_collection_infornet.json
+- Contém chamadas para:
+  - Login
+  - Consulta de perfil
+  - Logout
+
+---
+
+## Pontos Pendentes
+
+Apesar da maioria das funcionalidades exigidas já terem sido desenvolvidas, seguem alguns pontos que ainda não foram completamente finalizados:
+
+- Integração visual completa entre os resultados da consulta e a renderização detalhada dos serviços por prestador.
+- Implementação de testes automatizados (unitários e de integração).
+- Containerização via Docker.
+- Tela com exibição via Blade (foi utilizada abordagem independente via HTML + JS).
+
+---
+
+## Considerações Finais
+
+O projeto está funcional, cumpre os principais requisitos e pode ser executado localmente conforme o passo a passo descrito. As funcionalidades principais de autenticação, busca de prestadores, cálculos de valores e integração externa estão implementadas, com foco em desempenho, clareza e arquitetura limpa.
+
+Em caso de dúvidas, estou à disposição para esclarecimentos.
+
