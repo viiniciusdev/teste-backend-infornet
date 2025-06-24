@@ -1,4 +1,4 @@
-# Teste Técnico – Desenvolvedor Backend Laravel – Infornet
+# Teste Técnico Backend Laravel – Infornet
 
 Este projeto foi desenvolvido como parte do processo seletivo. O sistema simula uma plataforma utilizada por assistências 24 horas veicular, com foco na escolha do melhor prestador de serviço com base em custo-benefício e distância percorrida.
 
@@ -8,7 +8,8 @@ Este projeto foi desenvolvido como parte do processo seletivo. O sistema simula 
 
 - PHP 8.1
 - Laravel 12
-- MySQL
+- xampp 
+- MySQL (via xampp)
 - JWT Auth
 - Tailwind CSS (frontend)
 - JavaScript com AJAX
@@ -94,6 +95,7 @@ const token = "Bearer COLE_SEU_TOKEN_JWT_AQUI";
 ```
 
 O token é obtido ao fazer login via Postman em `/api/login`. Sem isso, as requisições ao backend falham.
+OBS: o token expira em torno de 10 a 15 min tendo que colar manualmente novamente no const token = "Bearer COLE_SEU_TOKEN_JWT_AQUI"
 
 ---
 
@@ -170,12 +172,14 @@ php artisan serve
 
 ---
 
-## O Que Ainda Pode Ser Melhorado
+## O que ainda pode ser melhorado
 
-- [ ] Testes unitários e de integração
-- [ ] Containerização com Docker
-- [ ] Versão alternativa com Blade
-- [ ] Autenticação automática no frontend (sem colar o token manualmente)
+- [ ] Implementação de testes automatizados (unitários e de integração com PHPUnit)
+- [ ] Containerização com Docker (Dockerfile e docker-compose.yml)
+- [ ] Versão alternativa usando Blade em vez de HTML puro
+- [ ] Autenticação automática no frontend (tela de login + armazenamento de token)
+- [ ] Validações mais robustas com FormRequest e mensagens padronizadas
+- [ ] Documentação automatizada da API (ex: Swagger ou Scribe)
 
 ---
 
