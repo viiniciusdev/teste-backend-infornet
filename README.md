@@ -1,13 +1,13 @@
 # Teste Técnico – Desenvolvedor Backend Laravel – Infornet
 
-Este projeto foi desenvolvido como parte do processo seletivo para a vaga de Desenvolvedor Backend na empresa Infornet. O sistema simula uma plataforma utilizada por assistências 24 horas veicular, com foco na escolha do melhor prestador de serviço com base em custo-benefício e distância percorrida.
+Este projeto foi desenvolvido como parte do processo seletivo. O sistema simula uma plataforma utilizada por assistências 24 horas veicular, com foco na escolha do melhor prestador de serviço com base em custo-benefício e distância percorrida.
 
 ---
 
 ##  Tecnologias Utilizadas
 
 - PHP 8.1
-- Laravel 10
+- Laravel 12
 - MySQL
 - JWT Auth
 - Tailwind CSS (frontend)
@@ -97,19 +97,13 @@ const token = "COLE_SEU_TOKEN_JWT_AQUI";
 Sem isso, a API não autoriza a requisição. Token é obtido ao fazer login via Postman em /api/login.
 
 ## Documentação Postman
-Arquivo incluído: API Teste todos_metodos(GET_POST).json
+Arquivo incluído: postman_collection_infornet.json
 
-Contém todos os métodos prontos para testes:
+Contém os métodos prontos para testes:
 
 Autenticação
 
-Cadastro
-
-Consultas
-
-Cálculos
-
-Integrações externas
+loguin com token gerado jwt
 
 Organização do Código
 Separação por:
@@ -138,7 +132,7 @@ node_modules/
 
 Chaves e logs
 
-🚀 Como Executar o Projeto
+ Como Executar o Projeto
 Clone o repositório
 
 bash
