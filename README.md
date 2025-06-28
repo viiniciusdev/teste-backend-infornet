@@ -25,7 +25,6 @@ Este projeto foi desenvolvido como parte do processo seletivo. O sistema simula 
 - Rotas protegidas por `auth:api`:
   - `GET /api/me`: Dados do usuário autenticado
   - `POST /api/logout`: Encerra sessão
-  - `POST /api/refresh`: Atualiza token
 
 ### Cadastro de Prestadores
 
